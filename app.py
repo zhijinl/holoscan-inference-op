@@ -7,13 +7,14 @@
 ## E-mail:   <zhijinl@nvidia.com>
 ##
 ## Started on  Wed Apr 24 13:22:28 2024 Zhijin Li
-## Last update Wed Apr 24 15:48:33 2024 Zhijin Li
+## Last update Wed Apr 24 16:24:34 2024 Zhijin Li
 ## ---------------------------------------------------------------------------
 
 
 import os
 
 from holoscan.operators import InferenceOp
+from holoscan.conditions import CountCondition
 from holoscan.resources import UnboundedAllocator
 from holoscan.core import Application, Operator, OperatorSpec
 
@@ -76,9 +77,11 @@ class App(Application):
       **self.kwargs('inference'),
     )
 
+    # Run 3 times.
     print_op = PrintOp(
       self,
-      name='print'
+      CountCondition(self, 3),
+      name='print',
     )
 
     self.add_flow(input_op, inference_op, {('out', 'receivers')})
